@@ -1,0 +1,54 @@
+<html>
+	<head>
+		<script>
+
+			var id = 0;
+
+			function sendTransaction() {
+
+				var accountNumber = document.getElementById("accountNumber").innerText;
+				var amount = document.getElementById("amount").innerText;
+				var transactionJson = '{"accountNumber":"' + accountNumber + '","amount":"' + amount + '"}';
+
+				var http = new XMLHttpRequest();
+    			http.onreadystatechange = function() {
+         			if (this.readyState == 4 && this.status == 200) {
+             			document.getElementById("transactionResult").innerText= this.responseText;
+             			id = JSON.parse(this.responseText).transactionId;
+             			monitorProgress();
+         				}
+    				};
+    			http.open("POST", "https://localhost/api/transaction", true);
+    			http.setRequestHeader("Content-type", "application/json");
+    			http.send(transactionJson);
+			}
+
+
+			function monitorProgress() {
+				var webSocket = new WebSocket("wss://localhost/api/monitor");
+				webSocket.onmessage = function(event) {
+					document.getElementById("transactionStatus").innerText =  new Date() + " : " + event.data;
+					if (event.data == 'COMPLETE') {
+						webSocket.close();
+					}
+					else {
+						setTimeout(monitorProgress, 5000);
+					}
+				};
+			
+				webSocket.onopen = function(event) {
+					webSocket.send("monitor " + id);
+				};
+			}
+		</script>
+	</head>
+
+	<body>
+		<h2>New Transaction</h2>
+		<label for="accountNumber">Account number</label> <input id="accountNumber" type="number" value="123" />
+		<label for="amount">Amount</label> <input id="amount" type="number" value="1000.00" />
+		<button onClick="sendTransaction()">Send a transaction</button>
+		<div id="transactionResult"></div>
+		<div id="transactionStatus"></div> 
+	</body>
+</html>

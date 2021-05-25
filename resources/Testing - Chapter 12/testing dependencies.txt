@@ -1,0 +1,12 @@
+<dependency>
+    <groupId>com.typesafe.akka</groupId>
+    <artifactId>akka-http-testkit_${scala.binary.version}</artifactId>
+    <version>${akka.http.version}</version>
+</dependency>
+
+<dependency>
+    <groupId>org.junit.vintage</groupId>
+    <artifactId>junit-vintage-engine</artifactId>
+    <version>5.5.2</version>
+    <scope>test</scope>
+</dependency>

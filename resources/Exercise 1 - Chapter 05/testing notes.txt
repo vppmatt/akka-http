@@ -1,0 +1,44 @@
+(1) Try to call an invalid url (expect 404)
+curl -i -X POST "http://localhost:8080/api/transactions"
+
+(2) Try and add a transaction with no data (expect to get 400 bad request)
+curl -i -X POST "http://localhost:8080/api/transaction"
+
+(3) Try and add a transaction which is valid 
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"123","amount":"1000.00"}'
+
+(4) Try and add a transaction with an invalid field
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"123","amounts":"1000.00"}' - should get 400 bad request
+
+(5) Try and add a transaction with a non numeric account number
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"abc","amount":"1000.00"}'
+400 bad request
+
+(6) Get a transaction status
+curl -i "http://localhost:8080/api/transaction?id=0"
+curl -i "http://localhost:8080/api/transaction?id=1"
+
+(7) Try and get a status for a transaction id that doesn't exist (expect to get a satus of unknown)
+curl -i "http://localhost:8080/api/transaction?id=21345"
+
+(8) Simulate a mining operation
+curl -i -X PUT "http://localhost:8080/api/mining?lastHash=1b2c"
+
+
+full test:
+
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"277","amount":"317.29"}'
+
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"706","amount":"604.18"}'
+
+curl -i "http://localhost:8080/api/transaction?id=0"
+curl -i "http://localhost:8080/api/transaction?id=1"
+
+curl -i -X PUT http://localhost:8080/api/mining?lastHash=0;
+
+curl -i -X POST "http://localhost:8080/api/transaction" -H "Content-Type: application/json" -d '{"accountNumber":"551","amount":"13.77"}'
+
+curl -i http://localhost:8080/api/transaction?id=1
+
+curl -i http://localhost:8080/api/transaction?id=2
+

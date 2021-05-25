@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<script>
+			function sendTransaction() {
+
+				var accountNumber = document.getElementById("accountNumber").innerText;
+				var amount = document.getElementById("amount").innerText;
+				var transactionJson = '{"accountNumber":"' + accountNumber + '","amount":"' + amount + '"}';
+
+				var http = new XMLHttpRequest();
+    			http.onreadystatechange = function() {
+         			if (this.readyState == 4 && this.status == 200) {
+             			document.getElementById("transactionResult").innerText= this.responseText;
+         				}
+    				};
+    			http.open("POST", "https://localhost/api/transaction", true);
+    			http.setRequestHeader("Content-type", "application/json");
+    			http.send(transactionJson);
+			}
+		</script>
+	</head>
+
+	<body>
+		<h2>New Transaction</h2>
+		<label for="accountNumber">Account number</label> <input id="accountNumber" type="number" value="123" />
+		<label for="amount">Amount</label> <input id="amount" type="number" value="1000.00" />
+		<button onClick="sendTransaction()">Send a transaction</button>
+		<div id="transactionResult"></div> 
+	</body>
+</html>
